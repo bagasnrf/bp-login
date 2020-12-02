@@ -8,6 +8,7 @@ const flashData7 = $('#editM').data('flashdata');
 const flashData8 = $('#deleteM').data('flashdata');
 const flashData9 = $('#newSubMenu').data('flashdata');
 const flashData10 = $('#access').data('flashdata');
+const flashData11 = $('#editUser').data('flashdata');
 if (flashData1) {
     Swal.fire({
         title: 'CONGRATULATION!',
@@ -84,6 +85,14 @@ if (flashData10) {
     Swal.fire({
         title: 'Congratulation!',
         text: 'Access ' + flashData10,
+        icon: 'success',
+        confirmButtonText: 'Cool!'
+    });
+}
+if (flashData11) {
+    Swal.fire({
+        title: 'Congratulation!',
+        text: 'User have been ' + flashData11 + ' successfully',
         icon: 'success',
         confirmButtonText: 'Cool!'
     });

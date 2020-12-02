@@ -30,7 +30,7 @@ class User extends CI_Controller
         $data['user'] = $this->db->get_where('user', ['email' =>
         $this->session->userdata('email')])->row_array();
 
-        $this->form_validation->set_rules('name', 'Full Name', 'required');
+        $this->form_validation->set_rules('name', 'Full Name', 'required|trim');
 
         if ($this->form_validation->run() == false) {
 
@@ -46,6 +46,7 @@ class User extends CI_Controller
             $this->db->set('name', $name);
             $this->db->where('email', $email);
             $this->db->update('user');
+            $this->session->set_flashdata('editUser', 'edited');
             redirect('user');
         }
     }

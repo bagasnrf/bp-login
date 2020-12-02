@@ -7,7 +7,7 @@
 
     <div class="row">
         <div class="col-lg-6">
-            <!-- IF SUCCESS ADD MENU -->
+            <!-- IF SUCCESS CHANGE USER ROLE ACCESS -->
             <div id="access" class="flash-data" data-flashdata="<?= $this->session->flashdata('access'); ?>"></div>
 
             <h5>Role : <?= $role['role']; ?> </h5>

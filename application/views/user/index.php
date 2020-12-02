@@ -4,6 +4,10 @@
     <!-- Page Heading -->
     <h1 class="h3 mb-4 text-gray-800">My Profile</h1>
 
+
+    <!-- IF SUCCESS CHANGE USER NAME OR PROFILE PICTURE -->
+    <div id="editUser" class="flash-data" data-flashdata="<?= $this->session->flashdata('editUser'); ?>"></div>
+
     <div class="card mb-3" style="max-width: 540px;">
         <div class="row no-gutters">
             <div class="col-md-4 p-2">
