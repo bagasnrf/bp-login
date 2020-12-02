@@ -72,6 +72,7 @@ class Menu extends CI_Controller
                     $data = [
                         'title' => $this->input->post('title'),
                         'menu_id' => $this->input->post('menu'),
+                        'url' => $this->input->post('url'),
                         'icon' => $this->input->post('icon'),
                         'is_active' => $this->input->post('is_active')
                     ];
