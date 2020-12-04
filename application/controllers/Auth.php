@@ -162,6 +162,8 @@ class Auth extends CI_Controller
         if ($user) {
             $user_token = $this->db->get_where('user_token', ['token' => $token])->row_array();
             if ($user_token) {
+                $this->session->set_userdata('reset_email', $email);
+                $this->changePassword();
             } else {
                 $this->session->set_flashdata('activation_failed', 'Reset Password failed! Wrong Token!');
                 redirect('auth');
@@ -170,6 +172,14 @@ class Auth extends CI_Controller
             $this->session->set_flashdata('activation_failed', 'Reset Password failed! Wrong Email!');
             redirect('auth');
         }
+    }
+
+    public function changePassword()
+    {
+        $data['title'] = 'Change Password';
+        $this->load->view('templates/auth_header', $data);
+        $this->load->view('auth/change-password', $data);
+        $this->load->view('templates/auth_footer');
     }
 
     public function verify()
