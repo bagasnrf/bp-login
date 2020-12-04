@@ -162,7 +162,7 @@ class Auth extends CI_Controller
             if ($user_token) {
 
                 if (time() - $user_token['date_created'] < (60 * 60 * 24)) {
-                    $this->db->set('is_active');
+                    $this->db->set('is_active', 1);
                     $this->db->where('email', $email);
                     $this->db->update('user');
 

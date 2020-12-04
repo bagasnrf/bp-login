@@ -18,7 +18,7 @@
                                 <div class="text-center">
                                     <h1 class="h4 text-gray-900 mb-4">Just Login!</h1>
                                 </div>
-                                <div id="activation_success" class="flash-data" data-flashdata="<?= $this->session->flashdata('registered'); ?>"></div>
+                                <div id="activation_success" class="flash-data" data-flashdata="<?= $this->session->flashdata('activation_success'); ?>"></div>
                                 <div id="x_email" class="flash-data" data-flashdata="<?= $this->session->flashdata('x_email'); ?>"></div>
                                 <div id="x_active" class="flash-data" data-flashdata="<?= $this->session->flashdata('x_active'); ?>"></div>
                                 <div id="x_password" class="flash-data" data-flashdata="<?= $this->session->flashdata('x_password'); ?>"></div>
