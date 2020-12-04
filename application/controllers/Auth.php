@@ -187,6 +187,14 @@ class Auth extends CI_Controller
         }
     }
 
+    public function forgotPassword()
+    {
+        $data['title'] = 'Forgot Password';
+        $this->load->view('templates/auth_header', $data);
+        $this->load->view('auth/forgot-password', $data);
+        $this->load->view('templates/auth_footer');
+    }
+
     public function logout()
     {
         $this->session->unset_userdata('email');
