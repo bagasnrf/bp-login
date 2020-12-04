@@ -15,6 +15,9 @@
                         </div>
                         <div class="col-lg-6">
                             <div class="p-5">
+                                <div id="activation_failed" class="flash-data" data-flashdata="<?= $this->session->flashdata('activation_failed'); ?>"></div>
+                                <div id="activation_success" class="flash-data" data-flashdata="<?= $this->session->flashdata('activation_success'); ?>"></div>
+
                                 <div class="text-center">
                                     <h1 class="h4 text-gray-900 mb-4">Forgot your password?</h1>
                                 </div>

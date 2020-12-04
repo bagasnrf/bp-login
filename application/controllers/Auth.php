@@ -139,6 +139,9 @@ class Auth extends CI_Controller
         if ($type == 'verify') {
             $this->email->subject('Account Verification');
             $this->email->message('Click this link to verify your account : <a href="' . base_url() . 'auth/verify?email=' . $this->input->post('email') . '& token=' . urlencode($token) . '">Activate</a>');
+        } else if ($type == 'forgot') {
+            $this->email->subject('Reset Password');
+            $this->email->message('Click this link to reset your password : <a href="' . base_url() . 'auth/resetpassword?email=' . $this->input->post('email') . '& token=' . urlencode($token) . '">Reset Password</a>');
         }
 
         if ($this->email->send()) {
@@ -146,6 +149,26 @@ class Auth extends CI_Controller
         } else {
             echo $this->email->print_debugger();
             die;
+        }
+    }
+
+    public function resetPassword()
+    {
+        $email = $this->input->get('email');
+        $token = $this->input->get('token');
+
+        $user = $this->db->get_where('user', ['email' => $email])->row_array();
+
+        if ($user) {
+            $user_token = $this->db->get_where('user_token', ['token' => $token])->row_array();
+            if ($user_token) {
+            } else {
+                $this->session->set_flashdata('activation_failed', 'Reset Password failed! Wrong Token!');
+                redirect('auth');
+            }
+        } else {
+            $this->session->set_flashdata('activation_failed', 'Reset Password failed! Wrong Email!');
+            redirect('auth');
         }
     }
 
@@ -189,10 +212,33 @@ class Auth extends CI_Controller
 
     public function forgotPassword()
     {
-        $data['title'] = 'Forgot Password';
-        $this->load->view('templates/auth_header', $data);
-        $this->load->view('auth/forgot-password', $data);
-        $this->load->view('templates/auth_footer');
+        $this->form_validation->set_rules('email', 'Email', 'trim|required|valid_email');
+        if ($this->form_validation->run() == false) {
+            $data['title'] = 'Forgot Password';
+            $this->load->view('templates/auth_header', $data);
+            $this->load->view('auth/forgot-password', $data);
+            $this->load->view('templates/auth_footer');
+        } else {
+            $email = $this->input->post('email');
+            $user = $this->db->get_where('email', ['email' => $email, 'is_active' => 1])->row_array();
+            if ($user) {
+                $token = base64_encode(random_bytes(32));
+                $user_token = [
+                    'email' => $email,
+                    'token' => $token,
+                    'date_created' => time()
+                ];
+
+                $this->db->insert('user_token', $user_token);
+                $this->_sendEmail($token, 'forgot');
+
+                $this->session->set_flashdata('activation_success', 'Please check your email to reset your password!');
+                redirect('auth');
+            } else {
+                $this->session->set_flashdata('activation_failed', 'Email is not registerd or activated!');
+                redirect('auth/forgot-password');
+            }
+        }
     }
 
     public function logout()
