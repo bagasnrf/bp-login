@@ -176,10 +176,30 @@ class Auth extends CI_Controller
 
     public function changePassword()
     {
-        $data['title'] = 'Change Password';
-        $this->load->view('templates/auth_header', $data);
-        $this->load->view('auth/change-password', $data);
-        $this->load->view('templates/auth_footer');
+        if (!$this->session->userdata('reset_email')) {
+            redirect('auth');
+        }
+
+        $this->form_validation->set_rules('password1', 'Password', 'trim|required|min_length[3]');
+        $this->form_validation->set_rules('password2', 'Password', 'trim|required|min_length[3]|matches[password1]');
+        if ($this->form_validation->run() == false) {
+            $data['title'] = 'Change Password';
+            $this->load->view('templates/auth_header', $data);
+            $this->load->view('auth/change-password', $data);
+            $this->load->view('templates/auth_footer');
+        } else {
+            $password = password_hash($this->input->post('password1'), PASSWORD_DEFAULT);
+            $email = $this->session->userdata('reset_email');
+
+            $this->db->set('password', $password);
+            $this->db->where('email', $email);
+            $this->db->update('user');
+
+            $this->session->unset_userdata('reset_email');
+
+            $this->session->set_flashdata('activation_success', 'Password has been changed!');
+            redirect('auth');
+        }
     }
 
     public function verify()
@@ -230,7 +250,7 @@ class Auth extends CI_Controller
             $this->load->view('templates/auth_footer');
         } else {
             $email = $this->input->post('email');
-            $user = $this->db->get_where('email', ['email' => $email, 'is_active' => 1])->row_array();
+            $user = $this->db->get_where('user', ['email' => $email, 'is_active' => 1])->row_array();
             if ($user) {
                 $token = base64_encode(random_bytes(32));
                 $user_token = [
