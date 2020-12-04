@@ -14,17 +14,16 @@
                             <img src="<?= base_url('assets/'); ?>img/login.jpg" alt="">
                         </div>
                         <div class="col-lg-6">
-                            <!-- sweet alert -->
                             <div class="p-5">
                                 <div class="text-center">
                                     <h1 class="h4 text-gray-900 mb-4">Just Login!</h1>
                                 </div>
-                                <div id="registered" class="flash-data" data-flashdata="<?= $this->session->flashdata('registered'); ?>"></div>
+                                <div id="activation_success" class="flash-data" data-flashdata="<?= $this->session->flashdata('registered'); ?>"></div>
                                 <div id="x_email" class="flash-data" data-flashdata="<?= $this->session->flashdata('x_email'); ?>"></div>
                                 <div id="x_active" class="flash-data" data-flashdata="<?= $this->session->flashdata('x_active'); ?>"></div>
                                 <div id="x_password" class="flash-data" data-flashdata="<?= $this->session->flashdata('x_password'); ?>"></div>
                                 <div class="flash-data" id="logout" data-flashdata="<?= $this->session->flashdata('logout'); ?>"></div>
-
+                                <div id="activation_failed" class="flash-data" data-flashdata="<?= $this->session->flashdata('activation_failed'); ?>"></div>
                                 <form class="user" method="post" action="">
                                     <div class="form-group">
                                         <input type="text" class="form-control form-control-user" id="email" name="email" placeholder="Enter Email Address..." value="<?= set_value('email'); ?>">

@@ -88,25 +88,36 @@ class Auth extends CI_Controller
             $this->load->view('templates/auth_footer');
         } else {
 
+            $email = $this->input->post('email', true);
             $data = [
                 'name' => htmlspecialchars($this->input->post('name', true)),
-                'email' => htmlspecialchars($this->input->post('email', true)),
+                'email' => htmlspecialchars($email),
                 'image' => 'default.jpg',
                 'password' => password_hash($this->input->post('password1'), PASSWORD_DEFAULT),
                 'role_id' => 2,
                 'is_active' => 0,
                 'date_created' => time()
             ];
-            // $this->db->insert('user', $data);
 
-            $this->_sendEmail();
+            //siapkan token
+            $token = base64_encode(random_bytes(32));
+            $user_token = [
+                'email' => $email,
+                'token' => $token,
+                'date_created' => time()
+            ];
 
-            $this->session->set_flashdata('registered', 'created');
+            $this->db->insert('user', $data);
+            $this->db->insert('user_token', $user_token);
+
+            $this->_sendEmail($token, 'verify');
+
+            $this->session->set_flashdata('activation_success', 'Account registration success! Please activate your account!');
             redirect('auth');
         }
     }
 
-    private function _sendEmail()
+    private function _sendEmail($token, $type)
     {
         $config = [
             'protocol' => 'smtp', //simple mail transfer protocol
@@ -123,15 +134,56 @@ class Auth extends CI_Controller
         $this->email->initialize($config);
 
         $this->email->from('bl778797@gmail.com', 'Lotus');
-        $this->email->to('bagaspaw@gmail.com');
-        $this->email->subject('testing');
-        $this->email->message('Hello World!');
+        $this->email->to($this->input->post('email'));
+
+        if ($type == 'verify') {
+            $this->email->subject('Account Verification');
+            $this->email->message('Click this link to verify your account : <a href="' . base_url() . 'auth/verify?email=' . $this->input->post('email') . '& token=' . urlencode($token) . '">Activate</a>');
+        }
 
         if ($this->email->send()) {
             return true;
         } else {
             echo $this->email->print_debugger();
             die;
+        }
+    }
+
+    public function verify()
+    {
+        $email = $this->input->get('email');
+        $token = $this->input->get('token');
+
+        $user = $this->db->get_where('user', ['email' => $email])->row_array();
+
+        if ($user) {
+            $user_token = $this->db->get_where('user_token', ['token' => $token])->row_array();
+
+            if ($user_token) {
+
+                if (time() - $user_token['date_created'] < (60 * 60 * 24)) {
+                    $this->db->set('is_active');
+                    $this->db->where('email', $email);
+                    $this->db->update('user');
+
+                    $this->db->delete('user_token', ['email' => $email]);
+
+                    $this->session->set_flashdata('activation_success', 'Account activation success! Please login!');
+                    redirect('auth');
+                } else {
+                    $this->db->delete('user');
+                    $this->db->delete('user_token', ['email' => $email]);
+
+                    $this->session->set_flashdata('activation_failed', 'Account activation failed! Token expired!');
+                    redirect('auth');
+                }
+            } else {
+                $this->session->set_flashdata('activation_failed', 'Account activation failed! Wrong Token!');
+                redirect('auth');
+            }
+        } else {
+            $this->session->set_flashdata('activation_failed', 'Account activation failed! Wrong Password!');
+            redirect('auth');
         }
     }
 

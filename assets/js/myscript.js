@@ -1,4 +1,4 @@
-const flashData1 = $('#registered').data('flashdata');
+const flashData1 = $('#activation_success').data('flashdata');
 const flashData2 = $('#x_email').data('flashdata');
 const flashData3 = $('#x_active').data('flashdata');
 const flashData4 = $('#x_password').data('flashdata');
@@ -11,12 +11,13 @@ const flashData10 = $('#access').data('flashdata');
 const flashData11 = $('#editUser').data('flashdata');
 const flashData12 = $('#change_password').data('flashdata');
 const flashData13 = $('#change_success').data('flashdata');
+const flashData14 = $('#activation_failed').data('flashdata');
 if (flashData1) {
     Swal.fire({
         title: 'CONGRATULATION!',
-        text: 'Your account has been ' + flashData1,
+        text: flashData1,
         icon: 'success',
-        confirmButtonText: 'Mantap!'
+        confirmButtonText: 'Wait for Activate'
     });
 }
 if (flashData2) {
@@ -113,6 +114,14 @@ if (flashData13) {
         text: flashData13,
         icon: 'success',
         confirmButtonText: 'Cool!'
+    });
+}
+if (flashData14) {
+    Swal.fire({
+        title: 'Oops!',
+        text: flashData14,
+        icon: 'error',
+        confirmButtonText: 'Tehe :p'
     });
 }
 //tombol-logout
